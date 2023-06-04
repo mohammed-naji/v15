@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\SubscribeController;
 
 // . // concatenate
 // -> // object -> method, value
@@ -72,31 +76,29 @@ use Illuminate\Support\Facades\Route;
 //     }
 // });
 
-Route::get('/', function() {
-    return 'Home';
-});
+// Route::get('/', function() {
+//     return 'Home';
+// });
 
-Route::get('/about', function() {
-    return 'About';
-});
+// Route::get('/about', function() {
+//     return 'About';
+// });
 
-Route::get('/contact', function() {
-    return 'Contact page';
-});
+// Route::get('/contact', function() {
+//     return 'Contact page';
+// });
 
-Route::post('/contact', function() {
-    return 'Contact post';
-});
+// Route::post('/contact', function() {
+//     return 'Contact post';
+// });
 
-Route::get('/posts/{id?}', function($id = '') {
-    return 'Posts';
-});
+// Route::get('/posts/{id?}', function($id = '') {
+//     return 'Posts';
+// });
 
-Route::post('subscribe', function() {
-    return 'Subscribe';
-});
-
-
+// Route::post('subscribe', function() {
+//     return 'Subscribe';
+// });
 
 
 
@@ -109,9 +111,11 @@ Route::post('subscribe', function() {
 
 
 
-Route::get('our-team', function() {
-    return 'Our Team';
-})->name('teampage');
+
+
+// Route::get('our-team', function() {
+//     return 'Our Team';
+// })->name('teampage');
 
 // DRY => DON'T REPEAT YOURSELF
 
@@ -125,18 +129,48 @@ Route::get('our-team', function() {
 // Route::get($page.'/roles', function() {});
 
 
-Route::prefix('admin')->name('admin.')->group(function() {
-    Route::get('/posts', function() {})->name('posts');
-    Route::get('/comment', function() {})->name('comment');
-    Route::get('/products', function() {})->name('products');
-    Route::get('/orders', function() {})->name('orders');
-    Route::get('/users', function() {})->name('users');
-    Route::get('/roles', function() {})->name('roles');
-});
+// Route::prefix('admin')->name('admin.')->group(function() {
+//     Route::get('/posts', function() {})->name('posts');
+//     Route::get('/comment', function() {})->name('comment');
+//     Route::get('/products', function() {})->name('products');
+//     Route::get('/orders', function() {})->name('orders');
+//     Route::get('/users', function() {})->name('users');
+//     Route::get('/roles', function() {})->name('roles');
+// });
 
 
+// Route::get('/', 'TestController@index');
+// Route::get('/', [TestController::class, 'index']);
+// Route::get('/', [TestController::class, 'home']);
+
+// Route::get('/', [SiteController::class, 'index'])->name('site.index');
+// Route::get('/about', [SiteController::class, 'about'])->name('site.about');
+// Route::get('/services', [SiteController::class, 'services'])->name('site.services');
+// Route::get('/team', [SiteController::class, 'team'])->name('site.team');
+// Route::get('/contact-me', [SiteController::class, 'contact'])->name('site.contact');
 
 
+// Posts CRUD Application Routes
+// Read Routes
+// Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+// Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
+
+// // Create Routes
+// Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+// Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
+
+// // Update Routes
+// Route::get('/posts/{id}/edit', [PostController::class, 'edit'])->name('posts.edit');
+// Route::match(['put', 'patch'],'/posts/{id}/update', [PostController::class, 'update'])->name('posts.update');
+
+// // Delete
+// Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+
+// Route::resource('posts', PostController::class);
+
+// Route::get('/subscribe', SubscribeController::class);
+
+Route::get('/', [SiteController::class, 'home'])->name('home');
 
 
 
