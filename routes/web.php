@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\Site1Controller;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\SubscribeController;
@@ -170,9 +171,15 @@ use App\Http\Controllers\SubscribeController;
 
 // Route::get('/subscribe', SubscribeController::class);
 
-Route::get('/', [SiteController::class, 'home'])->name('home');
+// Route::get('/', [SiteController::class, 'home'])->name('home');
 
 
-
+Route::prefix('site1')->name('site1.')->group(function() {
+    Route::get('/', [Site1Controller::class, 'index'])->name('index');
+    Route::get('/my-resume', [Site1Controller::class, 'resume'])->name('resume');
+    Route::get('/our-projects', [Site1Controller::class, 'projects'])->name('projects');
+    Route::get('/contact', [Site1Controller::class, 'contact'])->name('contact');
+    Route::post('/contact', [Site1Controller::class, 'contact'])->name('contact');
+});
 
 
