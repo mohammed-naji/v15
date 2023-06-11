@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Site1Controller;
@@ -183,3 +184,10 @@ Route::prefix('site1')->name('site1.')->group(function() {
 });
 
 
+
+Route::prefix('blog')->name('blog.')->group(function() {
+    Route::get('/', [BlogController::class, 'index'])->name('index');
+    Route::get('/about', [BlogController::class, 'about'])->name('about');
+    Route::get('/contact', [BlogController::class, 'contact'])->name('contact');
+    Route::get('/post', [BlogController::class, 'post'])->name('post');
+});
