@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Site1Controller;
@@ -191,3 +192,6 @@ Route::prefix('blog')->name('blog.')->group(function() {
     Route::get('/contact', [BlogController::class, 'contact'])->name('contact');
     Route::get('/post', [BlogController::class, 'post'])->name('post');
 });
+
+Route::get('form1', [FormController::class, 'form1'])->name('form1');
+Route::post('form1', [FormController::class, 'form1_data'])->name('form1_data');
