@@ -64,4 +64,35 @@ class FormController extends Controller
 
         return view('forms.form2_data', compact('name', 'email'));
     }
+
+    function form3() {
+
+        return view('forms.form3');
+    }
+
+    function form3_data(Request $request) {
+        $request->validate([
+            'name' => 'required',
+            // 'email' => 'required',
+            // 'age' => 'required',
+            // 'gender' => 'required',
+            // 'education' => 'required',
+        ]);
+
+        dd($request->all());
+    }
+
+    function form4() {
+        // dd(time());
+        return view('forms.form4');
+    }
+
+    function form4_data(Request $request) {
+
+        $name = rand(). time(). $request->file('image')->getClientOriginalName();
+        $request->file('image')->move(public_path('uploads'), $name);
+
+        // move_uploaded_file($_FILES['image']['tmp_name'], 'uploads/'.$_FILES['image']['name']); // PHP Pure
+
+    }
 }
