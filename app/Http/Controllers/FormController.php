@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonalRequest;
+use App\Mail\ContactUsMail;
+use App\Mail\TestMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class FormController extends Controller
@@ -93,6 +96,47 @@ class FormController extends Controller
         $request->file('image')->move(public_path('uploads'), $name);
 
         // move_uploaded_file($_FILES['image']['tmp_name'], 'uploads/'.$_FILES['image']['name']); // PHP Pure
+
+    }
+
+    function form5() {
+        return view('forms.form5');
+    }
+
+    function form5_data (Request $request) {
+        // dd($request->all());
+        // Validate
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'subject' => 'required',
+            'message' => 'required'
+        ]);
+
+        $data = $request->except('_token');
+
+        date_default_timezone_set('Asia/Gaza');
+        // Upload CV
+        $ex = $request->file('cv')->getClientOriginalExtension();
+        $cvname = strtolower($request->name) . '-cv-' . date('Y m d - h i s') . '.' . $ex;
+        $request->file('cv')->move(public_path('uploads/cv'), $cvname);
+
+        $data['cv'] = $cvname;
+
+
+
+        // Send Mail
+        Mail::to('mohammed.almassri.2020@gmail.com')->send(new ContactUsMail($data));
+
+
+        // validation
+
+        // upload files
+
+        // add to database or any logic
+
+        // redirect to another page
 
     }
 }
