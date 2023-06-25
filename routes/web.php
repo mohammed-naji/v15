@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BooksController;
 use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
@@ -209,3 +210,6 @@ Route::post('/form4', [FormController::class, 'form4_data'])->name('form4_data')
 
 Route::get('/form5', [FormController::class, 'form5'])->name('form5');
 Route::post('/form5', [FormController::class, 'form5_data'])->name('form5_data');
+
+// Read Books
+Route::get('/books', [BooksController::class, 'index'])->name('books.index');
