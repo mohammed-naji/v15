@@ -10,4 +10,10 @@ class Book extends Model
     use HasFactory;
 
     protected $table = 'books';
+
+    // protected $fillable = [
+    //     'name', 'cover', 'publisher', 'page_count', 'price'
+    // ];
+
+    protected $guarded = [];
 }

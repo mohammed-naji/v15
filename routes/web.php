@@ -213,3 +213,10 @@ Route::post('/form5', [FormController::class, 'form5_data'])->name('form5_data')
 
 // Read Books
 Route::get('/books', [BooksController::class, 'index'])->name('books.index');
+
+// Create
+Route::get('/books/create', [BooksController::class, 'create'])->name('books.create');
+Route::post('/books/store', [BooksController::class, 'store'])->name('books.store');
+
+// Delete
+Route::delete('/books/{id}', [BooksController::class, 'destroy'])->name('books.destroy');
