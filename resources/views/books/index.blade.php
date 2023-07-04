@@ -32,7 +32,10 @@
 
         <div class="d-flex align-items-center justify-content-between">
             <h1>All books</h1>
-            <a href="{{ route('books.create') }}" class="btn btn-dark"><i class="fas fa-plus"></i> Add new Book</a>
+            <div>
+                <a href="{{ route('books.create') }}" class="btn btn-dark"><i class="fas fa-plus"></i> Add new Book</a>
+                <a href="{{ route('books.trash') }}" class="btn btn-danger"><i class="fas fa-trash"></i> Trashed</a>
+            </div>
         </div>
 
         <form action="{{ route('books.index') }}" method="get" class="d-flex my-3">
@@ -88,7 +91,8 @@
 
                     @forelse ($books as $book)
                         <tr>
-                            <td>{{ $book->id }}</td>
+                            {{-- <td>@dump($loop)</td> --}}
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $book->name }}</td>
                             <td><img width="80" src="{{ asset('uploads/covers/'.$book->cover) }}" alt=""></td>
                             <td>{{ $book->publisher }}</td>
@@ -97,7 +101,7 @@
                             <td>{{ $book->created_at ? $book->created_at->format('d M, Y') : '' }}</td>
                             <td>{{ $book->updated_at ? $book->updated_at->diffForHumans() : '' }}</td>
                             <td>
-                                <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                                <a onclick="updateBook(event)" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
 
 
                                 <form class="d-inline" action="{{ route('books.destroy', $book->id) }}" method="POST">
@@ -108,9 +112,6 @@
                                 </form>
 
                                 {{-- <a href="{{ route('books.destroy', $book->id) }}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a> --}}
-
-
-
                             </td>
                         </tr>
                     @empty
@@ -129,6 +130,106 @@
             {{ $books->appends($_GET)->links() }}
         </div>
     </div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="{{ route('books.store') }}" method="POST" enctype="multipart/form-data">
+
+                @csrf
+
+                <div class="mb-3">
+                    <label>Name</label>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" />
+                    @error('name')
+                        <small class="invalid-feedback">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <div class="mb-3 oldimage">
+                    <label>Cover</label>
+                    <input type="file" name="cover" class="form-control @error('cover') is-invalid @enderror" />
+                    @error('cover')
+                        <small class="invalid-feedback">{{ $message }}</small>
+                    @enderror
+                    <img width="80" src="" alt="">
+                </div>
+
+                <div class="mb-3">
+                    <label>Publisher</label>
+                    <input type="text" name="publisher" class="form-control @error('publisher') is-invalid @enderror" value="{{ old('publisher') }}" />
+                    @error('publisher')
+                        <small class="invalid-feedback">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label>Page Count</label>
+                    <input type="number" name="page_count" class="form-control @error('page_count') is-invalid @enderror" value="{{ old('page_count') }}" />
+                    @error('page_count')
+                        <small class="invalid-feedback">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label>Price</label>
+                    <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price') }}" />
+                    @error('price')
+                        <small class="invalid-feedback">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <button class="btn btn-success px-5"> <i class="fas fa-save"></i> Update</button>
+
+            </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+{{-- Ajax Update --}}
+<script>
+
+function updateBook(e) {
+    // Get Old Data
+
+    let tr = e.target.closest('tr');
+    let oldtitle = tr.querySelector('td:nth-child(2)').innerHTML
+    let oldcover = tr.querySelector('td:nth-child(3) img')
+    let oldpublisher = tr.querySelector('td:nth-child(4)').innerHTML
+    let oldpagecount = tr.querySelector('td:nth-child(5)').innerHTML
+    let oldprice = tr.querySelector('td:nth-child(6)').innerHTML
+
+    // console.log(oldtitle, oldcover, oldpublisher, oldpagecount, oldprice);
+    // Add Data to Form
+    document.querySelector('input[name=name]').value = oldtitle
+    document.querySelector('input[name=publisher]').value = oldpublisher
+    document.querySelector('input[name=page_count]').value = oldpagecount
+    document.querySelector('input[name=price]').value = oldprice
+
+
+    // document.querySelector('.oldimage').innerHTML += oldcover
+    document.querySelector('.oldimage img').src = oldcover.src
+    // Update Data
+}
+
+</script>
+
+
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

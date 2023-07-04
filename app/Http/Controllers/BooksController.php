@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class BooksController extends Controller
 {
@@ -37,6 +38,44 @@ class BooksController extends Controller
 
         // dd($books);
         return view('books.index', compact('books'));
+    }
+
+    function trash(Request $request) {
+        if($request->has('q')) {
+            $books = Book::onlyTrashed()->where('name', 'like', '%' . $request->q . '%')
+            ->paginate($request->count);
+        }else {
+            $books = Book::onlyTrashed()->latest('id')->paginate(20);
+        }
+        // $books = Book::onlyTrashed()->paginate(10);
+        return view('books.trash', compact('books'));
+    }
+
+    function restore($id) {
+        $book = Book::onlyTrashed()->find($id);
+
+        $book->restore();
+
+        return redirect()
+        ->route('books.trash')
+        ->with('msg', 'Book restored successfully')
+        ->with('type', 'info');
+    }
+
+    function forcedelete($id) {
+        $book = Book::onlyTrashed()->find($id);
+
+        if($book->cover != 'no-image.png') {
+            File::delete(public_path('uploads/covers/'.$book->cover));
+        }
+
+
+        $book->forceDelete();
+
+        return redirect()
+        ->route('books.trash')
+        ->with('msg', 'Book deleted permanently successfully')
+        ->with('type', 'info');
     }
 
     function create() {

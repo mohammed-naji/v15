@@ -218,5 +218,10 @@ Route::get('/books', [BooksController::class, 'index'])->name('books.index');
 Route::get('/books/create', [BooksController::class, 'create'])->name('books.create');
 Route::post('/books/store', [BooksController::class, 'store'])->name('books.store');
 
+// Soft Delete Roues
+Route::get('/books/trash', [BooksController::class, 'trash'])->name('books.trash');
+Route::get('/books/{id}/restore', [BooksController::class, 'restore'])->name('books.restore');
+Route::delete('/books/{id}/forcedelete', [BooksController::class, 'forcedelete'])->name('books.forcedelete');
+
 // Delete
 Route::delete('/books/{id}', [BooksController::class, 'destroy'])->name('books.destroy');
