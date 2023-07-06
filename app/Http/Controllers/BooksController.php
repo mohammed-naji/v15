@@ -143,6 +143,54 @@ class BooksController extends Controller
         ->with('type', 'warning');
     }
 
+    function update(Request $request, $id) {
+
+        // validate data
+        $request->validate([
+            'name' => 'required',
+            // 'cover' => 'required',
+            'publisher' => 'required',
+            'page_count' => 'required',
+            'price' => 'required'
+        ]);
+
+        $data = $request->except('_token', 'cover');
+
+        // upload files
+        if($request->hasFile('cover')) {
+            $cover_name = rand().time().$request->file('cover')->getClientOriginalName();
+            $request->file('cover')->move(public_path('uploads/covers'), $cover_name);
+            $data['cover'] = $cover_name;
+        }
+
+        $book = Book::find($id);
+
+        $book->update($data);
+
+        return $book;
+
+        // // redirect to any page
+        // return redirect()
+        // ->route('books.index')
+        // ->with('msg', 'Book updated successfully')
+        // ->with('type', 'success');
+    }
+
+    function delete_selected(Request $request) {
+        if($request->selected_ids == 'all') {
+            // Book::delete();
+            DB::table('books')->update(['deleted_at' => now()]);
+        }else {
+            $ids = explode(',', $request->selected_ids);
+            Book::whereIn('id', $ids)->delete();
+        }
+
+        return redirect()
+        ->route('books.index')
+        ->with('msg', 'Selected Books deleted successfully')
+        ->with('type', 'success');
+    }
+
 }
 
 // http://127.0.0.1:8000/books?q=co&count=15

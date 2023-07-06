@@ -33,6 +33,14 @@
         <div class="d-flex align-items-center justify-content-between">
             <h1>All books</h1>
             <div>
+                <form class="d-inline" action="{{ route('books.delete_selected') }}" method="POST">
+                    @csrf
+
+                    <input type="hidden" name="selected_ids">
+
+                    <button class="btn btn-danger btn-delete d-none"><i class="fas fa-trash"></i> Deleted Selected</button>
+
+                </form>
                 <a href="{{ route('books.create') }}" class="btn btn-dark"><i class="fas fa-plus"></i> Add new Book</a>
                 <a href="{{ route('books.trash') }}" class="btn btn-danger"><i class="fas fa-trash"></i> Trashed</a>
             </div>
@@ -55,6 +63,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" id="check_all"></th>
                         <th>ID</th>
                         <th>Name</th>
                         <th>Cover</th>
@@ -90,9 +99,14 @@
                     @endif --}}
 
                     @forelse ($books as $book)
-                        <tr>
+                        <tr id="row_{{ $book->id }}">
                             {{-- <td>@dump($loop)</td> --}}
-                            <td>{{ $loop->iteration }}</td>
+                            <td>
+                                <input type="checkbox" value="{{ $book->id }}">
+                            </td>
+                            <td>
+                                {{ $loop->iteration }}
+                            </td>
                             <td>{{ $book->name }}</td>
                             <td><img width="80" src="{{ asset('uploads/covers/'.$book->cover) }}" alt=""></td>
                             <td>{{ $book->publisher }}</td>
@@ -101,7 +115,7 @@
                             <td>{{ $book->created_at ? $book->created_at->format('d M, Y') : '' }}</td>
                             <td>{{ $book->updated_at ? $book->updated_at->diffForHumans() : '' }}</td>
                             <td>
-                                <a onclick="updateBook(event)" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                                <a href="{{ route('books.update', $book->id) }}" onclick="updateBook(event)" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
 
 
                                 <form class="d-inline" action="{{ route('books.destroy', $book->id) }}" method="POST">
@@ -132,78 +146,72 @@
     </div>
 
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form action="{{ route('books.store') }}" method="POST" enctype="multipart/form-data">
-
-                @csrf
-
-                <div class="mb-3">
-                    <label>Name</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" />
-                    @error('name')
-                        <small class="invalid-feedback">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="mb-3 oldimage">
-                    <label>Cover</label>
-                    <input type="file" name="cover" class="form-control @error('cover') is-invalid @enderror" />
-                    @error('cover')
-                        <small class="invalid-feedback">{{ $message }}</small>
-                    @enderror
-                    <img width="80" src="" alt="">
-                </div>
-
-                <div class="mb-3">
-                    <label>Publisher</label>
-                    <input type="text" name="publisher" class="form-control @error('publisher') is-invalid @enderror" value="{{ old('publisher') }}" />
-                    @error('publisher')
-                        <small class="invalid-feedback">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label>Page Count</label>
-                    <input type="number" name="page_count" class="form-control @error('page_count') is-invalid @enderror" value="{{ old('page_count') }}" />
-                    @error('page_count')
-                        <small class="invalid-feedback">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label>Price</label>
-                    <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price') }}" />
-                    @error('price')
-                        <small class="invalid-feedback">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <button class="btn btn-success px-5"> <i class="fas fa-save"></i> Update</button>
-
-            </form>
-        </div>
-
-      </div>
-    </div>
-  </div>
+    @include('books.modal')
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 
 {{-- Ajax Update --}}
 <script>
 
+let checkboxes = document.querySelectorAll('td input[type=checkbox]');
+checkboxes.forEach(cb => {
+    cb.onchange = () => {
+
+        let check = false;
+        let selected = [];
+
+        checkboxes.forEach(ch => {
+            if(ch.checked) {
+                check = true
+                selected.push( ch.value )
+            }
+        })
+
+        if(check) {
+            document.querySelector('.btn-delete').classList.remove('d-none')
+        }else {
+            document.querySelector('.btn-delete').classList.add('d-none')
+        }
+
+        // console.log(selected.join(','));
+        document.querySelector('input[name=selected_ids]').value = selected.join(',')
+    }
+})
+
+document.querySelector('#check_all').onchange = () => {
+    const checkboxes = Array.from(document.querySelectorAll('td input[type=checkbox]'));
+    let check = document.querySelector('#check_all').checked
+    checkboxes.forEach((cb) => cb.checked = check );
+
+    if(check) {
+        document.querySelector('.btn-delete').classList.remove('d-none')
+        document.querySelector('input[name=selected_ids]').value = 'all'
+    }else {
+        document.querySelector('.btn-delete').classList.add('d-none')
+        document.querySelector('input[name=selected_ids]').value = ''
+    }
+}
+
+function prevImg(e) {
+    console.log(e);
+    if (e.target.files && e.target.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+        document.querySelector('#showimg').src = e.target.result
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
+}
+}
+
 function updateBook(e) {
     // Get Old Data
+
+    let href = e.target.closest('a').href
 
     let tr = e.target.closest('tr');
     let oldtitle = tr.querySelector('td:nth-child(2)').innerHTML
@@ -214,6 +222,7 @@ function updateBook(e) {
 
     // console.log(oldtitle, oldcover, oldpublisher, oldpagecount, oldprice);
     // Add Data to Form
+    document.querySelector('.modal form').action = href
     document.querySelector('input[name=name]').value = oldtitle
     document.querySelector('input[name=publisher]').value = oldpublisher
     document.querySelector('input[name=page_count]').value = oldpagecount
@@ -225,40 +234,72 @@ function updateBook(e) {
     // Update Data
 }
 
+document.querySelector('.modal form').onsubmit = (e) => {
+    e.preventDefault();
+
+    let url = document.querySelector('.modal form').action;
+
+    // get form data
+    let data = new FormData(document.querySelector('.modal form'))
+
+    // send ajax request
+    axios.post(url, data)
+    .then(function (res) {
+
+
+        let img = '{{ asset("uploads/covers") }}/' + res.data.cover
+
+        let tr = document.querySelector('#row_'+res.data.id);
+
+        tr.querySelector('td:nth-child(2)').innerHTML = res.data.name
+        tr.querySelector('td:nth-child(3) img').src = img
+        tr.querySelector('td:nth-child(4)').innerHTML = res.data.publisher
+        tr.querySelector('td:nth-child(5)').innerHTML = res.data.page_count
+        tr.querySelector('td:nth-child(6)').innerHTML = res.data.price
+
+        const truck_modal = document.querySelector('#exampleModal');
+        const modal = bootstrap.Modal.getInstance(truck_modal);
+        modal.hide();
+    })
+    .catch(function (err) {
+        console.log(error);
+    });
+}
+
 </script>
 
 
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-        })
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+    })
 
 
-        @if (session('msg'))
-        Toast.fire({
-            icon: '{{ session("type") }}',
-            title: '{{ session("msg") }}'
-        })
-        // Swal.fire({
-        //     title: 'Proccess Complete',
-        //     text: '{{ session("msg") }}',
-        //     icon: '{{ session("type") }}',
-        //     confirmButtonText: 'Done'
-        // })
-        @endif
-    </script>
+    @if (session('msg'))
+    Toast.fire({
+        icon: '{{ session("type") }}',
+        title: '{{ session("msg") }}'
+    })
+    // Swal.fire({
+    //     title: 'Proccess Complete',
+    //     text: '{{ session("msg") }}',
+    //     icon: '{{ session("type") }}',
+    //     confirmButtonText: 'Done'
+    // })
+    @endif
+</script>
     {{-- <script>
         setTimeout(() => {
             document.querySelector('.alert').classList.add('hide')

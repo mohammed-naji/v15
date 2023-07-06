@@ -225,3 +225,8 @@ Route::delete('/books/{id}/forcedelete', [BooksController::class, 'forcedelete']
 
 // Delete
 Route::delete('/books/{id}', [BooksController::class, 'destroy'])->name('books.destroy');
+// Delete
+Route::post('/books/delete_selected', [BooksController::class, 'delete_selected'])->name('books.delete_selected');
+
+// Update
+Route::put('/books/{id}/update', [BooksController::class, 'update'])->name('books.update');
