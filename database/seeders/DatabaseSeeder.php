@@ -5,6 +5,9 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Book;
+use App\Models\Comment;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,9 +18,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        Book::factory(150)->create();
+        // Book::factory(150)->create();
 
-        // \App\Models\User::factory(10)->create();
+        User::factory(10)->create();
+        Post::factory(20)->create();
+        Comment::factory(50)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

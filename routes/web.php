@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BooksController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\FlagController;
 use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
@@ -230,3 +232,6 @@ Route::post('/books/delete_selected', [BooksController::class, 'delete_selected'
 
 // Update
 Route::put('/books/{id}/update', [BooksController::class, 'update'])->name('books.update');
+
+Route::get('countries', [CountryController::class, 'index']);
+Route::get('flags', [FlagController::class, 'index']);
