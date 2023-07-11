@@ -235,3 +235,7 @@ Route::put('/books/{id}/update', [BooksController::class, 'update'])->name('book
 
 Route::get('countries', [CountryController::class, 'index']);
 Route::get('flags', [FlagController::class, 'index']);
+
+Route::get('posts', [PostController::class, 'all_posts'])->name('all_posts');
+Route::get('posts/{id}', [PostController::class, 'single_post'])->name('single_post');
+Route::post('posts/{id}', [PostController::class, 'comment_post'])->name('comment_post');
