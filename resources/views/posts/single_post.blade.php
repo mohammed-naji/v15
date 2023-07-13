@@ -33,7 +33,7 @@
             {{-- @if (is_null($comment->replay_to)) --}}
             <div class="mb-4">
                 <div class="d-flex align-items-center mb-2">
-                    <h4 class="m-0">{{ $comment->user->name }}</h4>
+                    <h4 class="m-0">{{ $comment->id }} - {{ $comment->user->name }}</h4>
                     <small class="mx-4" style="position: relative; top:3px">{{ $comment->created_at->diffForhumans() }}</small>
                 </div>
                 <p>{{ $comment->body }}</p>
@@ -43,7 +43,7 @@
             @foreach ($comment->replayed as $replay)
                 <div class="mb-2 bg-light p-4 ms-5">
                     <div class="d-flex align-items-center mb-2">
-                        <h4 class="m-0">{{ $replay->user->name }}</h4>
+                        <h4 class="m-0">{{ $replay->id }} - {{ $replay->user->name }}</h4>
                         <small class="mx-4" style="position: relative; top:3px">{{ $replay->created_at->diffForhumans() }}</small>
                     </div>
                     <p>{{ $replay->body }}</p>

@@ -34,6 +34,8 @@
 
         </div>
 
+        {{ $posts->links() }}
+
     </div>
 
 </body>

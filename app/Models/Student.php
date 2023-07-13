@@ -10,4 +10,8 @@ class Student extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    function subjects() {
+        return $this->belongsToMany(Subject::class);
+    }
 }

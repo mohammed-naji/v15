@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Site1Controller;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\SubscribeController;
 
@@ -239,3 +240,8 @@ Route::get('flags', [FlagController::class, 'index']);
 Route::get('posts', [PostController::class, 'all_posts'])->name('all_posts');
 Route::get('posts/{id}', [PostController::class, 'single_post'])->name('single_post');
 Route::post('posts/{id}', [PostController::class, 'comment_post'])->name('comment_post');
+
+Route::get('register_subjects', [SubjectController::class, 'register_subjects'])->name('register_subjects');
+Route::post('register_subjects', [SubjectController::class, 'register_subjects_data']);
+
+Route::get('remove_subject/{id}', [SubjectController::class, 'remove_subject'])->name('remove_subject');

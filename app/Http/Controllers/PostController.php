@@ -24,11 +24,12 @@ class PostController extends Controller
                 }
             ]
         )->withCount(
-            [
-                'comments' => function (Builder $query) {
-                    $query->whereNull('replay_to');
-                }
-            ]
+            // [
+            //     'comments' => function (Builder $query) {
+            //         $query->whereNull('replay_to');
+            //     }
+            // ]
+            'comments'
         )->findOrFail($id);
         // $post = Post::findOrFail($id);
 
